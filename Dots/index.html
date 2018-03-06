@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="Style.css" rel="stylesheet"/>
+    <title>Dots</title>
+</head>
+
+<body>
+
+	<div id="field" align="center">
+		<canvas id = "canvas" width="500" height="500"></canvas>
+		<form>
+			<input id="stepNumber" type="number" min="0" max="285" oninput="changeNumber()"/>
+			<input id="Play" type="button" value="Play" onclick="play()">
+			<input id="Stop" type="button" value="Stop" onclick="stop()">
+		</form>
+	</div>
+
+	<script src="Scripts/Drawer.js"></script>
+	<script src="Scripts/Color.js"></script>
+	<script src="Scripts/Position.js"></script>
+	<script src="Scripts/Player.js"></script>
+	<script src="Scripts/Dot.js"></script>
+	<script src="Scripts/Field.js"></script>
+	<script src="Scripts/GameResult.js"></script>
+	<script src="Scripts/Game.js"></script>
+	<script src="Scripts/StabbedDot.js"></script>
+	<script src="Scripts/Area.js"></script>
+
+	<script src="Scripts/Bots/Bot.js"></script>
+	<script src="Scripts/Bots/Oleg.js"></script>
+	<script src="Scripts/Bots/Vadim.js"></script>
+	<script src="Scripts/Bots/Nikita.js"></script>
+	<script src="Scripts/Bots/Ilya.js"></script>
+
+    <script>
+		var drawer = new Drawer();
+		var game = new Game();
+        var player1 = new Ilya("blue", new Color(0, 0, 255), game.getField());
+        var player2 = new Ilya("red", new Color(255, 0, 0), game.getField());
+        var gameResult = game.startGame(player1, player2);
+        drawer.drawField();
+
+        document.getElementById('stepNumber').max = gameResult.length();
+
+        function drawStep(index) {
+            drawer.clean();
+            drawer.drawField();
+            var stepField = gameResult.getStep(index);
+            for(var i = 0; i < stepField.length(); i++){
+                if(!(stepField.getDot(i) instanceof StabbedDot))
+                    drawer.drawDot(stepField.getDot(i));
+            }
+            for(i = 0; i < stepField.areasLength(); i++){
+                drawer.drawArea(stepField.getArea(i).getDots(), stepField.getArea(i).getColor());
+            }
+
+            //
+            var c  = stepField.length();
+            var current = stepField.getDot(--c);
+            while ((current instanceof StabbedDot)){
+                current = stepField.getDot(--c);
+			}
+			var col = current.getOwner().getColor();
+
+            document.getElementById('Stop').style.color = col;
+            document.getElementById('Play').style.color = col;
+            document.getElementById('stepNumber').style.color = col;
+			//
+
+            drawer.drawResult(stepField.countOfOccupyDots(player1), stepField.countOfOccupyDots(player2));
+            if(index+1 >= gameResult.length()){
+                drawer.drawWinner(gameResult.getWinner(), stepField.countOfOccupyDots(gameResult.getWinner()));
+			}
+        }
+
+        function changeNumber() {
+            drawStep(+document.getElementById('stepNumber').value-1);
+        }
+
+        var timerId;
+
+        function play() {
+            timerId = setTimeout(function n() {
+                document.getElementById('stepNumber').value = +document.getElementById('stepNumber').value + 1;
+                drawStep(+document.getElementById('stepNumber').value - 1);
+                if(+document.getElementById('stepNumber').value < gameResult.length())
+                	timerId = setTimeout(n, 100);
+            }, 100);
+        }
+
+        function stop() {
+			clearTimeout(timerId);
+        }
+        
+    </script>
+
+</body>
+
+</html>

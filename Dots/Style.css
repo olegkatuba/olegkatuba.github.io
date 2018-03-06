@@ -1,0 +1,50 @@
+body{
+    margin: auto;
+}
+#canvas{
+	border: 2px solid black;
+    margin: 8px;
+}
+#field{
+    width: 500px;
+    margin: auto;
+    position: relative;
+}
+form{
+    width: 500px;
+    margin: auto;
+}
+
+input{
+    margin-top: 1px;
+    margin-bottom: 1px;
+    width: 47px;
+    background-color: rgb(255, 255, 255);
+    border-width: 0;
+    font-family: "Comic Sans MS", sans-serif;
+    font-size: 15px;
+    color: black;
+}
+
+input[type="number"]{
+    width: 48px;
+    top: 211px;
+    text-align: center;
+}
+
+input[value="Play"]{
+    top: 236px;
+}
+
+input[value="Stop"]{
+    top: 261px;
+}
+
+form{
+    position: absolute;
+    border-width: 0;
+    left: 435px;
+    top: 210px;
+    height: 74px;
+    width: 49px;
+}
